@@ -12,7 +12,7 @@ struct tNo *prox;
 };
 
 int main(void) {
-  struct tNo *p,*lista = NULL;
+  struct tNo *p,*q,*lista = NULL;
   int opcao;
   do{
     printf("\n\n\nDigite 1 para incluir...\n");
@@ -28,6 +28,33 @@ int main(void) {
       scanf("%f",&(p->dado.valor));
       p->prox = lista;
       lista = p;
+
+      if(lista == NULL){//INCLUSAO LISTA VASIA
+        p->prox = NULL;
+        lista = p;
+      }else{
+        if(p->dado.codigo < lista->dado.codigo){
+          //INCLUSÃO NO INICIO
+          p->prox = lista;
+          lista = p;
+        }else{
+          q = lista;
+          while(q->prox != NULL){//COLOCA O Q NO ULTIMO DA LISTA
+            q = p->prox;
+          }
+          if(p->dado.codigo > q->dado.codigo){
+            q->prox = p;
+            p->prox = NULL;
+          }else{
+            while(q->prox->dado.codigo < p->dado.codigo){
+              q->prox = p;            }
+          }
+          q->prox = p;
+          p->prox = q->prox;
+        }
+      }
+      
+
       break;
       case 2:
       p = lista;
