@@ -16,7 +16,8 @@ int main(void) {
   int opcao;
   do{
     printf("\n\n\nDigite 1 para incluir...\n");
-    printf("\n\n\nDigite 0 para sair...\n");
+    printf("Digite 2 para listar...\n");
+    printf("Digite 0 para sair...\n");
     scanf("%d",&opcao);
     switch(opcao){
       case 1:
@@ -26,9 +27,6 @@ int main(void) {
       scanf("%d",&(p->dado.codigo));
       printf("Digite o valor:\n");
       scanf("%f",&(p->dado.valor));
-      p->prox = lista;
-      lista = p;
-
       if(lista == NULL){//INCLUSAO LISTA VASIA
         p->prox = NULL;
         lista = p;
@@ -37,38 +35,40 @@ int main(void) {
           //INCLUSÃO NO INICIO
           p->prox = lista;
           lista = p;
-        }else{
+        }else{//fim meio
           q = lista;
-          while(q->prox != NULL){//COLOCA O Q NO ULTIMO DA LISTA
-            q = p->prox;
-          }
+          while(q->prox != NULL)//COLOCA O Q NO ULTIMO DA LISTA
+            q = q->prox;
           if(p->dado.codigo > q->dado.codigo){
             q->prox = p;
             p->prox = NULL;
-          }else{
-            while(q->prox->dado.codigo < p->dado.codigo){
-              q->prox = p;            }
+          }else{//meio
+            q = lista;//q aponta para o primeiro da lista
+            while(q->prox->dado.codigo < p->dado.codigo)//executa em quanto q->codigo codigo for menor q o p->codigo
+              q=q->prox;// avança o q           
+             p->prox = q->prox;//insere o proximo de q para ponteiro p->prox
+             q->prox = p;//insere o p para sser o proximo de q
           }
-          q->prox = p;
-          p->prox = q->prox;
         }
       }
-      
-
       break;
       case 2:
       p = lista;
       printf("descição-valor\n\n");
       while(p != NULL){
-        printf("%d -- %f\n",p->dado.codigo,p->dado.valor);
+        printf("%d -- %f\n",p->dado.codigo,
+        
+        p->dado.valor);
         p = p->prox;
         
       }
-      
       break;
-
     }
 
   }while(opcao != 0);
+
+  while(p != NULL){
+    free(p);
+  }
   return 0;
 }

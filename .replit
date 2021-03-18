@@ -1,2 +1,2 @@
 language = "c"
-run = "c lista_encadeada.c"
+run = "clang lista_encadeada.c"
