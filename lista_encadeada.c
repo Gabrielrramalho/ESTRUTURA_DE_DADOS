@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+
+
 struct tProduto{
 int codigo;
 char descricao[30];
@@ -11,39 +13,99 @@ struct tProduto dado;
 struct tNo *prox;
 };
 
+int menu(int min, int max);
+struct tNo* criar_no();
+void listar(struct tNo *lista);
+void inclusao_ordenada(struct tNo **lista,struct tNo *p);
+
+
 int main(void) {
   struct tNo *p,*q,*lista = NULL;
   int opcao;
   do{
-    printf("\n\n\nDigite 1 para incluir...\n");
-    printf("Digite 2 para listar...\n");
-    printf("Digite 0 para sair...\n");
-    scanf("%d",&opcao);
+    opcao = menu(0,2);
     switch(opcao){
       case 1:
-      printf("\n\n\nInclusao\n");
-      p = malloc(sizeof(struct tNo));
-      printf("Digite o codigo:\n");
-      scanf("%d",&(p->dado.codigo));
-      printf("Digite o valor:\n");
-      scanf("%f",&(p->dado.valor));
-      if(lista == NULL){//INCLUSAO LISTA VASIA
+      inclusao_ordenada(&lista, p);
+      break;
+      case 2:
+      listar(lista);
+      break;
+    }
+
+  }while(opcao != 0);
+
+  //while(p != NULL){
+    //q = p;
+    //p = p->prox;
+    //free(p);
+  //}
+  printf("%i",opcao);
+  return 0;
+}
+
+int menu(int min,int max) {
+  int opcao;
+  do{
+  printf("\n\n\nDigite 1 para incluir..\n");
+  printf("Digite 2 ára listar....\n");
+  printf("Digite 0 para sair......\n");
+  scanf("%d",&opcao);
+  if(opcao < min || opcao > max){
+    system("clear");
+    printf("Digite uma opção valida...");
+  }
+  }while(opcao < min || opcao > max);
+  return opcao;
+}
+
+
+struct tNo* criar_no(){//CRIA UM NOVO NO
+  struct tNo *novoNo;
+  printf("\n\n\nInclusao\n");
+  novoNo = malloc(sizeof(struct tNo));
+  printf("Digite o codigo:\n");
+  scanf("%d",&(novoNo->dado.codigo));
+  printf("Digite o valor:\n");
+  scanf("%f",&(novoNo->dado.valor));
+  return novoNo;
+}
+
+void listar (struct tNo *lista){//PRINTA TODOS    OS PRODUTOS
+ //@LISTA RECEBERA STRUCT tNo *p
+ struct tNo *p;
+ p = lista;
+ printf("descição-valor\n\n");
+ while(p != NULL){
+  printf("%d -- %f\n",p->dado.codigo,     
+  p->dado.valor);
+  p = p->prox;
+ }  
+}
+
+//INCLUI O NOVO NO ORDENADAMENTE
+//@tNo *lista RECEBE A STRCUT tNo LISTA QUE É SEMPRE O PRIMEIRO ELEMENTO DA LISTA
+//@tNo *p  RECEBERA STRUCT tNo P
+void inclusao_ordenada(struct tNo **lst,struct tNo *p){
+  struct tNo *q;
+  p = criar_no();
+if((*lst) == NULL){//INCLUSAO LISTA VASIA
         p->prox = NULL;
-        lista = p;
+        (*lst) = p;
       }else{
-        if(p->dado.codigo < lista->dado.codigo){
+        if(p->dado.codigo < (*lst)->dado.codigo){
           //INCLUSÃO NO INICIO
-          p->prox = lista;
-          lista = p;
+          p->prox = (*lst);
+          (*lst) = p;
         }else{//fim meio
-          q = lista;
+          q = (*lst);
           while(q->prox != NULL)//COLOCA O Q NO ULTIMO DA LISTA
             q = q->prox;
           if(p->dado.codigo > q->dado.codigo){
             q->prox = p;
             p->prox = NULL;
           }else{//meio
-            q = lista;//q aponta para o primeiro da lista
+            q = (*lst);//q aponta para o primeiro da lista
             while(q->prox->dado.codigo < p->dado.codigo)//executa em quanto q->codigo codigo for menor q o p->codigo
               q=q->prox;// avança o q           
              p->prox = q->prox;//insere o proximo de q para ponteiro p->prox
@@ -51,24 +113,4 @@ int main(void) {
           }
         }
       }
-      break;
-      case 2:
-      p = lista;
-      printf("descição-valor\n\n");
-      while(p != NULL){
-        printf("%d -- %f\n",p->dado.codigo,
-        
-        p->dado.valor);
-        p = p->prox;
-        
-      }
-      break;
-    }
-
-  }while(opcao != 0);
-
-  while(p != NULL){
-    free(p);
-  }
-  return 0;
 }
