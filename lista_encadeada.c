@@ -17,19 +17,32 @@ int menu(int min, int max);
 struct tNo* criar_no();
 void listar(struct tNo *lista);
 void inclusao_ordenada(struct tNo **lista,struct tNo *p);
+struct tNo* consultar(struct tNo *lista,int codigo);
 
 
 int main(void) {
-  struct tNo *p,*q,*lista = NULL;
-  int opcao;
+  struct tNo *p,*q,*lista = NULL,*localizado;
+  int opcao,codigo;
   do{
-    opcao = menu(0,2);
+    opcao = menu(0,3);
     switch(opcao){
       case 1:
       inclusao_ordenada(&lista, p);
       break;
       case 2:
       listar(lista);
+      break;
+      case 3:
+      printf("Digite o codigo\n");
+      scanf("%d",&codigo);
+      p = consultar(lista,codigo);
+      if(p == NULL){
+       printf("Codigo não encontrado");
+      }else{
+       printf("%d -- %f\n",
+       p->dado.codigo,     
+       p->dado.valor);
+      }
       break;
     }
 
@@ -48,7 +61,8 @@ int menu(int min,int max) {
   int opcao;
   do{
   printf("\n\n\nDigite 1 para incluir..\n");
-  printf("Digite 2 ára listar....\n");
+  printf("Digite 2 para listar....\n");
+  printf("Digite 3 para consultar....\n");
   printf("Digite 0 para sair......\n");
   scanf("%d",&opcao);
   if(opcao < min || opcao > max){
@@ -113,4 +127,15 @@ if((*lst) == NULL){//INCLUSAO LISTA VASIA
           }
         }
       }
+}
+
+struct tNo* consultar(struct tNo *lista,int codigo){
+  struct tNo *q = lista;
+  while((q != NULL)&&(q->dado.codigo <= codigo)){
+    if(codigo == q->dado.codigo){
+     return q;
+    }
+    q = q->prox;
+  }
+  return NULL;
 }
