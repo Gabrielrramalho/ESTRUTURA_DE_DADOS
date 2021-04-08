@@ -18,13 +18,14 @@ struct tNo* criar_no();
 void listar(struct tNo *lista);
 void inclusao_ordenada(struct tNo **lista,struct tNo *p);
 struct tNo* consultar(struct tNo *lista,int codigo);
+void excluir(struct tNo **lst,struct tNo *vitima);
 
 
 int main(void) {
   struct tNo *p,*q,*lista = NULL,*localizado;
   int opcao,codigo;
   do{
-    opcao = menu(0,3);
+    opcao = menu(0,4);
     switch(opcao){
       case 1:
       inclusao_ordenada(&lista, p);
@@ -42,6 +43,16 @@ int main(void) {
        printf("%d -- %f\n",
        p->dado.codigo,     
        p->dado.valor);
+      }
+      break;
+      case 4:
+      printf("Digite o codigo\n");
+      scanf("%d",&codigo);
+       p = consultar(lista,codigo);
+       if(p == NULL){
+       printf("Codigo não encontrado");
+      }else{
+       excluir(&lista, p);
       }
       break;
     }
@@ -63,7 +74,8 @@ int menu(int min,int max) {
   printf("\n\n\nDigite 1 para incluir..\n");
   printf("Digite 2 para listar....\n");
   printf("Digite 3 para consultar....\n");
-  printf("Digite 0 para sair......\n");
+  printf("Digite 4 para excluir......\n");
+  printf("Digite 0 para sair........\n");
   scanf("%d",&opcao);
   if(opcao < min || opcao > max){
     system("clear");
@@ -138,4 +150,17 @@ struct tNo* consultar(struct tNo *lista,int codigo){
     q = q->prox;
   }
   return NULL;
+}
+
+void excluir(struct tNo **lst,struct tNo *vitima){
+  struct tNo *p = (*lst);
+ if((*lst) == vitima){//EXCLUSÃO UNICO OU INICIO
+   (*lst) = vitima->prox;
+ }else{
+   while(p->prox != vitima){
+     p=p->prox;
+    }
+    p->prox = vitima->prox;
+ }
+ free(vitima);
 }
