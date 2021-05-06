@@ -13,6 +13,10 @@ struct tProduto dado;
 struct tNo *prox;
 };
 
+struct cabeca{
+  struct tNo sentinela;
+};
+
 int menu(int min, int max);
 struct tNo* criar_no();
 void listar(struct tNo *lista);

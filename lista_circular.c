@@ -1,5 +1,6 @@
+
 //################################################################################################################################################################
-//                    Lista duplamente encadeada com descritor
+//                             Lista circular
 //################################################################################################################################################################
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,45 +16,36 @@ float valor;
 struct tNo{
 struct tProduto dado;
 struct tNo *prox;//ponteiro para o proximo no da lista
-struct tNo *anterior;//ponteiro para o no anterior da lista
 };
 
-
-struct tDescritor{
-int qtd;//quantidade de elementos na lista
-struct tNo *inicio;//ponteiro para o primeiro no da lista
-struct tNo *fim;//ponteiro para o o ultimo no da lista
-};
-
-void inicializar(struct tDescritor*);
+void inicializar(struct tNo**);
 int menu(int min, int max);
 struct tNo* criar_no();
-void listar(struct tDescritor);
-void inclusao_ordenada(struct tDescritor* ,struct tNo*);
-struct tNo* consultar(struct tDescritor,int codigo);
-void excluir(struct tDescritor*,struct tNo*);
+void listar(struct tNo*);
+void inclusao_ordenada(struct tNo** ,struct tNo*);
+struct tNo* consultar(struct tNo*,int codigo);
+//void excluir(struct tDescritor*,struct tNo*);
 
 
 int main(void) {
   struct tNo *p;
-  struct tDescritor descritor;
-
-  inicializar(&descritor);
+  struct tNo *lista;
+  inicializar(&lista);
   int opcao,codigo;
   do{
     opcao = menu(0,4);
     switch(opcao){
       case 1:
        p = criar_no();
-      inclusao_ordenada(&descritor, p);
+      inclusao_ordenada(&lista, p);
       break;
       case 2:
-      listar(descritor);
+      listar(lista);
       break;
       case 3:
       printf("Digite o codigo\n");
       scanf("%d",&codigo);
-      p = consultar(descritor,codigo);
+      p = consultar(lista,codigo);
       if(p == NULL){
        printf("Codigo não encontrado");
       }else{
@@ -65,11 +57,11 @@ int main(void) {
       case 4:
       printf("Digite o codigo\n");
       scanf("%d",&codigo);
-       p = consultar(descritor,codigo);
+       //p = consultar(descritor,codigo);
        if(p == NULL){
        printf("Codigo não encontrado");
       }else{
-       excluir(&descritor, p);
+       //excluir(&descritor, p);
       }
       break;
     }
@@ -114,12 +106,12 @@ struct tNo* criar_no(){//CRIA UM NOVO NO
   return novoNo;
 }
 
-void listar (struct tDescritor lst){//PRINTA TODOS    OS PRODUTOS
+void listar (struct tNo *lista){//PRINTA TODOS    OS PRODUTOS
  //@Lst RECEBERA STRUCT do tipo tDescritor
  struct tNo *p;
- p = lst.inicio;
+ p = lista->prox;
  printf("descição-valor\n\n");
- while(p != NULL){
+ while(p != lista){
   printf("%d -- %f\n",p->dado.codigo,     
   p->dado.valor);
   p = p->prox;
@@ -129,53 +121,31 @@ void listar (struct tDescritor lst){//PRINTA TODOS    OS PRODUTOS
 //INCLUI O NOVO NO ORDENADAMENTE
 //@*lst RECEBE A STRCUT tDescritor
 //@*p  RECEBERA STRUCT tNo P
-void inclusao_ordenada(struct tDescritor *lst,struct tNo *p){
+void inclusao_ordenada(struct tNo **lista,struct tNo *p){
   struct tNo *q;
-if((*lst).inicio == NULL  && (*lst).fim == NULL){//INCLUSAO LISTA VASIA
-        p->prox = NULL;
-        p->anterior = NULL;
-        (*lst).inicio = p;
-        (*lst).fim = p;
-      }else{
-        if(p->dado.codigo < (*lst).inicio->dado.codigo){//INCLUSÃO NO INICIO
-          (*lst).inicio->anterior = p;
-          p->prox = (*lst).inicio;
-          (*lst).inicio = p;
-        }else{
-          if(p->dado.codigo > (*lst).fim->dado.codigo){//INCLUSÃO DE FIM
-            (*lst).fim->prox = p;
-            p->anterior = (*lst).fim;
-            p->prox = NULL;
-            (*lst).fim = p;
-          }else{//meio
-            q = (*lst).inicio;//q aponta para o primeiro da lista
-            while(q->dado.codigo < p->dado.codigo)//executa em quanto q->codigo codigo for menor q o p->codigo
-              q=q->prox;// avança o q           
-            
-            p->anterior = q->anterior;
-            q->anterior = q->prox;
-            p->anterior->prox = p;
-            
-          }
-        }
-      }
-      (*lst).qtd++;
+  q = (*lista);
+  while((q->prox != (*lista))&&(q->prox->dado.valor < p->dado.valor))
+  q = q->prox;
+  p->prox = q->prox;
+  q->prox = p;
 }
 
 //@lst RECEBE UMA STRUCT DO TIPO tDescritor
 //@codigo é chave para busca
-struct tNo* consultar(struct tDescritor lst,int codigo){
-  struct tNo *q = lst.inicio;
-  while((q != NULL)&&(q->dado.codigo <= codigo)){//condição para avançar o q
-    if(codigo == q->dado.codigo){//se o codigo for igual a q->codigo
-     return q;//retorna q
+struct tNo* consultar(struct tNo *lista,int codigo){
+  struct tNo *p = lista->prox;
+  lista->dado.codigo  = codigo + 1;
+  while(p->dado.codigo <= codigo){//condição para avançar o q
+    if(codigo == p->dado.codigo){//se o codigo for igual a q->codigo
+     return p;//retorna q
     }
-    q = q->prox;//avança o q
+    p = p->prox;//avança o q
   }
   return NULL;//se nao existir o codigo buscado retorna NULL
 }
 //@lst RECEBE UMA STRUCT DO TIPO tDescritor
 //@vitima No que sera excluido
+/*
 void excluir(struct tDescritor *lst,struct tNo *vitima){
   struct tNo *p = (*lst).inicio;
  if((*lst).qtd == 1){//EXCLUSÃO DE UNICO
@@ -199,9 +169,8 @@ void excluir(struct tDescritor *lst,struct tNo *vitima){
   free(vitima);
   (*lst).qtd--;
 }
-void inicializar(struct tDescritor *lst){
-(*lst).qtd =0;
-(*lst).fim = NULL;
-(*lst).inicio = NULL;
-
+*/
+void inicializar(struct tNo **lista){
+(*lista) = malloc(sizeof(struct tNo));
+(*lista)->prox = (*lista);
 }
